@@ -1,6 +1,9 @@
 #get 60bp overlap primers for making constructs
 
-#dummy data####
+#load packages
+library(tidyverse)
+
+#use dummy data####
 
 #list of parts
 lkup <- c("gg1", "gg2", "gg3", "gg4", "gg5")
@@ -28,18 +31,21 @@ test <- tibble(part_name = c("gg1_gg2_gg3",
                              "gg2_gg3_gg4_gg5",
                              "gg1_gg2_gg3_gg5"))
 
-#start here for generating primers####
+#or if you want to load own data####
 
-#if you want to load own data
-test <- read_csv("Desktop/your_primer_list.csv")
+#read parts lists
+test <- read_csv("your_parts_list.csv")
 
 #if format is in separate columns
 #change a, b, c to the name of the columns
-test <- unite(test, part_name, "a","b","c") %>% 
-        mutate(part_name = str_replace_all(part_name, "_NA", "")) %>% 
-        mutate(part_name = str_replace_all(part_name, "NA_", ""))
+test <- unite(test, part_name, colnames(test)) %>% 
+  mutate(part_name = str_replace_all(part_name, "_NA", "")) %>% 
+  mutate(part_name = str_replace_all(part_name, "NA_", ""))
 
+#read lookup table of primers
+lkup <- read_csv("your_lookup_table.csv")
 
+#start here for generating primers####
 
 #make empty list to store all primers
 test_list <- list()
@@ -50,7 +56,7 @@ for (j in 1:nrow(test)) {
   #extract part name  
   xy <- test$part_name[j]
   
-  #get parts and make to vector
+  #get parts and make vector
   parts <- xy %>% str_split("_")
   parts <- as.vector(parts[[1]])
   
@@ -88,4 +94,8 @@ primer_list <- bind_rows(test_list) %>% mutate(dup = duplicated(seq))
 
 #show data
 primer_list
+
+#export
+write_csv("primer_output.csv")
+
 
