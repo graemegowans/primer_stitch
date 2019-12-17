@@ -1,20 +1,31 @@
+#**********************************************
+#information####
+#**********************************************
 #get 60bp overlap primers for making constructs
+#works on multiple constructs
+#handles different lengths of constructs
 
-#load packages
+#**********************************************
+#1 - load packages####
+#**********************************************
+#install.packages("tidyverse")
 library(tidyverse)
 
-#use dummy data####
+#**********************************************
+#2a - generate test data ####
+#**********************************************
 
 #list of parts
 lkup <- c("gg1", "gg2", "gg3", "gg4", "gg5")
+
+#create object
 df <- NULL
 
 #generate random sequences for parts
 for (i in 1:length(lkup)) {
  
   df[[i]] <- tibble(
-  seq = paste0(sample(c("A", "T", "G", "C"), 
-                      200, replace = TRUE), 
+  seq = paste0(sample(c("A", "T", "G", "C"), 200, replace = TRUE), 
                collapse = ""))
 }
 
@@ -31,7 +42,10 @@ test <- tibble(part_name = c("gg1_gg2_gg3",
                              "gg2_gg3_gg4_gg5",
                              "gg1_gg2_gg3_gg5"))
 
-#or if you want to load own data####
+#**********************************************
+#2b - load your own data ####
+#**********************************************
+
 
 #read parts lists
 test <- read_csv("your_parts_list.csv")
@@ -45,7 +59,9 @@ test <- unite(test, part_name, colnames(test)) %>%
 #read lookup table of primers
 lkup <- read_csv("your_lookup_table.csv")
 
-#start here for generating primers####
+#**********************************************
+#3 - generate primers ####
+#**********************************************
 
 #make empty list to store all primers
 test_list <- list()
@@ -95,7 +111,9 @@ primer_list <- bind_rows(test_list) %>% mutate(dup = duplicated(seq))
 #show data
 primer_list
 
-#export
+#**********************************************
+#4 - export data ####
+#**********************************************
 write_csv("primer_output.csv")
 
 
