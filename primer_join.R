@@ -46,12 +46,10 @@ test <- tibble(part_name = c("gg1_gg2_gg3",
 #2b - load your own data ####
 #**********************************************
 
-
-#read parts lists
+#read parts list
 test <- read_csv("your_parts_list.csv")
 
-#if format is in separate columns
-#change a, b, c to the name of the columns
+#run if parts are in separate columns
 test <- unite(test, part_name, colnames(test)) %>% 
   mutate(part_name = str_replace_all(part_name, "_NA", "")) %>% 
   mutate(part_name = str_replace_all(part_name, "NA_", ""))
@@ -71,7 +69,7 @@ for (j in 1:nrow(test)) {
   
   #extract part name  
   xy <- test$part_name[j]
-  
+
   #get parts and make vector
   parts <- xy %>% str_split("_")
   parts <- as.vector(parts[[1]])
